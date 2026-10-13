@@ -1,0 +1,405 @@
+{
+  "info": {
+    "name": "API Oficina Mecânica",
+    "description": "Todas as rotas da API Oficina Mecânica.\n\nComece por Auth > Login: o token é salvo sozinho na variável {{token}} e usado nas demais rotas.\n\nAs requisições de criação salvam o id criado em {{clienteId}}, {{veiculoId}}, {{servicoId}} e {{ordemId}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080/api" },
+    { "key": "token", "value": "" },
+    { "key": "clienteId", "value": "1" },
+    { "key": "veiculoId", "value": "1" },
+    { "key": "servicoId", "value": "1" },
+    { "key": "ordemId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    pm.collectionVariables.set('token', pm.response.json().token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"usuario@email.com\",\n  \"senha\": \"123456\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Criar cliente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('clienteId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Silva\",\n  \"email\": \"joao.silva@email.com\",\n  \"telefone\": \"47999990000\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/clientes"
+          }
+        },
+        {
+          "name": "Listar clientes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/clientes?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["clientes"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "nome", "value": "João", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar cliente por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/clientes/{{clienteId}}"
+          }
+        },
+        {
+          "name": "Atualizar cliente",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Pedro Silva\",\n  \"email\": \"joao.silva@email.com\",\n  \"telefone\": \"47988887777\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/clientes/{{clienteId}}"
+          }
+        },
+        {
+          "name": "Listar veículos do cliente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/clientes/{{clienteId}}/veiculos"
+          }
+        },
+        {
+          "name": "Excluir cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/clientes/{{clienteId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Veículos",
+      "item": [
+        {
+          "name": "Criar veículo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('veiculoId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placa\": \"ABC1D23\",\n  \"modelo\": \"Fiat Uno\",\n  \"ano\": 2015,\n  \"cliente_id\": {{clienteId}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/veiculos"
+          }
+        },
+        {
+          "name": "Listar veículos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/veiculos?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["veiculos"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "placa", "value": "ABC", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar veículo por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/veiculos/{{veiculoId}}"
+          }
+        },
+        {
+          "name": "Atualizar veículo",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placa\": \"ABC1D23\",\n  \"modelo\": \"Fiat Uno Way\",\n  \"ano\": 2016,\n  \"cliente_id\": {{clienteId}}\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/veiculos/{{veiculoId}}"
+          }
+        },
+        {
+          "name": "Listar ordens de serviço do veículo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/veiculos/{{veiculoId}}/ordens-servico"
+          }
+        },
+        {
+          "name": "Excluir veículo",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/veiculos/{{veiculoId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Serviços",
+      "item": [
+        {
+          "name": "Criar serviço",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('servicoId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Balanceamento\",\n  \"preco\": 80.00\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/servicos"
+          }
+        },
+        {
+          "name": "Listar serviços",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/servicos",
+              "host": ["{{baseUrl}}"],
+              "path": ["servicos"],
+              "query": [
+                { "key": "preco_min", "value": "100", "disabled": true },
+                { "key": "preco_max", "value": "200", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar serviço por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/servicos/{{servicoId}}"
+          }
+        },
+        {
+          "name": "Atualizar serviço",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Balanceamento\",\n  \"preco\": 95.50\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/servicos/{{servicoId}}"
+          }
+        },
+        {
+          "name": "Excluir serviço",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/servicos/{{servicoId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ordens de Serviço",
+      "item": [
+        {
+          "name": "Abrir ordem de serviço",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    pm.collectionVariables.set('ordemId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"veiculo_id\": {{veiculoId}},\n  \"descricao\": \"Revisão geral\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/ordens-servico"
+          }
+        },
+        {
+          "name": "Listar ordens de serviço",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ordens-servico?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["ordens-servico"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "status", "value": "ABERTA", "description": "ABERTA, EM_ANDAMENTO ou CONCLUIDA", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar ordem de serviço por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/ordens-servico/{{ordemId}}"
+          }
+        },
+        {
+          "name": "Adicionar serviço à ordem",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"servico_id\": {{servicoId}},\n  \"quantidade\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/ordens-servico/{{ordemId}}/servicos"
+          }
+        },
+        {
+          "name": "Listar serviços da ordem",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/ordens-servico/{{ordemId}}/servicos"
+          }
+        },
+        {
+          "name": "Atualizar ordem de serviço",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"descricao\": \"Revisão geral com troca de óleo\",\n  \"status\": \"EM_ANDAMENTO\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/ordens-servico/{{ordemId}}"
+          }
+        },
+        {
+          "name": "Remover serviço da ordem",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/ordens-servico/{{ordemId}}/servicos/{{servicoId}}"
+          }
+        },
+        {
+          "name": "Excluir ordem de serviço",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/ordens-servico/{{ordemId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
